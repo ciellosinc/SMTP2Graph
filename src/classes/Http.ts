@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-
-const graphBaseUrl = new URL('https://graph.microsoft.com/v1.0/');
+import { Config } from './Config';
 
 export interface IRequestTimeouts
 {
@@ -8,14 +7,20 @@ export interface IRequestTimeouts
     overall: number;
 }
 
-/** Build a URL below the fixed Microsoft Graph v1.0 endpoint. */
+function graphBaseUrl(): URL
+{
+    return new URL(`${Config.graphUrl}/v1.0/`);
+}
+
+/** Build a URL below the configured Microsoft Graph v1.0 endpoint. */
 export function graphUrl(path: string): string
 {
     if(/^([a-z][a-z\d+.-]*:)?\/\//i.test(path) || path.startsWith('/'))
         throw new Error('Absolute Graph URLs are not allowed');
 
-    const url = new URL(path, graphBaseUrl);
-    if(url.origin !== graphBaseUrl.origin || !url.pathname.startsWith(graphBaseUrl.pathname))
+    const base = graphBaseUrl();
+    const url = new URL(path, base);
+    if(url.origin !== base.origin || !url.pathname.startsWith(base.pathname))
         throw new Error('Invalid Graph URL');
 
     return url.toString();

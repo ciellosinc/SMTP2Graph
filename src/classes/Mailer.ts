@@ -161,7 +161,7 @@ export class Mailer
             if(!this.#msalClient) throw new UnrecoverableError('Trying to login without an application registration');
 
             const res = await this.#msalClient.acquireTokenByClientCredential({
-                scopes: ['https://graph.microsoft.com/.default'],
+                scopes: [Config.graphScope],
             });
             return res?.accessToken!;
         });
